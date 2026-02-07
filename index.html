@@ -24,9 +24,6 @@ header{
   background:linear-gradient(135deg,var(--main),var(--sub));
   color:#fff;
   padding:16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
 }
 .tabs{
   display:flex;
@@ -146,34 +143,51 @@ function save(w){
   }
 }
 
-/* ========== iPhone 发音核心逻辑 ========== */
-let unlocked=false;
+/* =====================
+   iPhone 发音最终稳定版
+   ===================== */
 
-document.getElementById("unlockAudio").addEventListener("click",()=>{
-  const u=new SpeechSynthesisUtterance("hello");
+let unlocked = false;
+
+/* 必须由用户点击解锁（iOS 限制） */
+document.getElementById("unlockAudio").addEventListener("click", () => {
+  const u = new SpeechSynthesisUtterance("hello");
+  u.rate = 1;
+  speechSynthesis.cancel();
   speechSynthesis.speak(u);
-  unlocked=true;
-  document.getElementById("unlockAudio").style.display="none";
+
+  unlocked = true;
+  document.getElementById("unlockAudio").style.display = "none";
 });
 
+/* 核心发音函数（听感已优化） */
 function speak(text){
   if(!unlocked){
     alert("请先点击『开启发音』");
     return;
   }
 
-  const voices=speechSynthesis.getVoices();
-  const koVoice=voices.find(v=>v.lang==="ko-KR"||v.lang.startsWith("ko"));
+  const voices = speechSynthesis.getVoices();
+  const koVoice = voices.find(v =>
+    v.lang === "ko-KR" || v.lang.startsWith("ko")
+  );
 
   if(!koVoice){
-    alert("你的 iPhone 没有安装韩语语音\n请到：设置 → 辅助功能 → 朗读内容 → 声音 → 下载韩语");
+    alert(
+      "检测不到韩语语音\n\n" +
+      "请前往：设置 → 辅助功能 → 朗读内容 → 声音 → 下载【韩语·女性】"
+    );
     return;
   }
 
-  const u=new SpeechSynthesisUtterance(text);
-  u.voice=koVoice;
-  u.lang="ko-KR";
-  u.rate=0.9;
+  const u = new SpeechSynthesisUtterance(text);
+  u.voice = koVoice;
+  u.lang = "ko-KR";
+
+  /* 🔧 听感优化参数 */
+  u.rate = 0.85;
+  u.pitch = 1.05;
+  u.volume = 1;
 
   speechSynthesis.cancel();
   speechSynthesis.speak(u);

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>追星学韩语 ✨</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #ffe6f2;
+      --card: #ffffff;
+      --primary: #ff7ab6;
+      --text: #333;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Comic Sans MS", "PingFang SC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      padding: 16px;
+      text-align: center;
+      background: var(--primary);
+      color: white;
+      font-size: 20px;
+    }
+
+    .theme {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 12px;
+    }
+
+    .theme button {
+      padding: 6px 10px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 12px rgba(0,0,0,.08);
+    }
+
+    .word {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .meaning {
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .learn-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+
+    .idol {
+      text-align: center;
+      font-size: 32px;
+      animation: pop 0.6s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); }
+      70% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+<header>💖 追星女孩的韩语学习站 💖</header>
+
+<div class="theme">
+  <button onclick="setTheme('pink')">粉色</button>
+  <button onclick="setTheme('blue')">蓝色</button>
+  <button onclick="setTheme('white')">白色</button>
+  <button onclick="setTheme('black')">黑色</button>
+</div>
+
+<main>
+  <div class="card">
+    <div class="word" id="word">안녕</div>
+    <div class="meaning" id="meaning">你好</div>
+    <button class="learn-btn" onclick="learn()">我学会了！</button>
+    <div id="idol"></div>
+  </div>
+</main>
+
+<script>
+  const words = [
+    { k: "안녕", c: "你好" },
+    { k: "사랑해", c: "我爱你" },
+    { k: "고마워", c: "谢谢" },
+    { k: "괜찮아", c: "没关系" },
+    { k: "보고 싶어", c: "我想你了" }
+  ];
+
+  const idols = ["💫🕺", "🎤✨", "💖🌈", "⭐️💃", "🔥🎶"];
+
+  let index = 0;
+
+  function learn() {
+    const idol = document.getElementById("idol");
+    idol.innerHTML = idols[Math.floor(Math.random() * idols.length)];
+    idol.className = "idol";
+
+    index = (index + 1) % words.length;
+    setTimeout(() => {
+      document.getElementById("word").innerText = words[index].k;
+      document.getElementById("meaning").innerText = words[index].c;
+      idol.innerHTML = "";
+    }, 800);
+  }
+
+  function setTheme(t) {
+    if (t === "pink") {
+      document.documentElement.style.setProperty("--bg", "#ffe6f2");
+      document.documentElement.style.setProperty("--primary", "#ff7ab6");
+    }
+    if (t === "blue") {
+      document.documentElement.style.setProperty("--bg", "#e6f0ff");
+      document.documentElement.style.setProperty("--primary", "#6fa8ff");
+    }
+    if (t === "white") {
+      document.documentElement.style.setProperty("--bg", "#ffffff");
+      document.documentElement.style.setProperty("--primary", "#999");
+    }
+    if (t === "black") {
+      document.documentElement.style.setProperty("--bg", "#111");
+      document.documentElement.style.setProperty("--card", "#222");
+      document.documentElement.style.setProperty("--text", "#fff");
+      document.documentElement.style.setProperty("--primary", "#ff7ab6");
+    }
+  }
+</script>
+
+</body>
+</html>

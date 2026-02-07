@@ -10,183 +10,215 @@
   --main:#ff7eb9;
   --sub:#ffd6e8;
   --bg:#fdf1f7;
+  --card:#fff;
+  --text:#333;
+  --gray:#777;
 }
+
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
   background:var(--bg);
+  color:var(--text);
 }
+
 header{
   background:linear-gradient(135deg,var(--main),var(--sub));
   color:#fff;
   padding:16px;
   display:flex;
   justify-content:space-between;
+  align-items:center;
 }
+
 .tabs{
   display:flex;
-  gap:6px;
-  padding:8px;
+  gap:8px;
+  padding:10px;
   background:#fff;
 }
+
 .tab{
   flex:1;
   text-align:center;
   padding:6px;
-  border-radius:14px;
+  border-radius:16px;
   background:#f1f2f7;
   font-size:12px;
 }
-.tab.active{background:var(--main);color:#fff;}
-.container{padding:14px;}
+
+.tab.active{
+  background:var(--main);
+  color:#fff;
+}
+
+.container{
+  padding:14px;
+}
+
 .card{
-  background:#fff;
+  background:var(--card);
   border-radius:16px;
   padding:14px;
-  margin-bottom:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,.06);
+  margin-bottom:14px;
+  box-shadow:0 6px 16px rgba(0,0,0,0.06);
 }
+
 .korean{font-size:22px;font-weight:700;}
-.roman{font-size:13px;color:#777;}
-.scene{font-size:12px;color:#999;margin-top:4px;}
+.roman{font-size:13px;color:var(--gray);}
+
 button{
   margin-top:8px;
+  margin-right:6px;
   border:none;
-  padding:6px 12px;
+  padding:8px 14px;
   border-radius:20px;
-  background:#ffd6e8;
+  background:var(--sub);
 }
 </style>
 </head>
 
 <body>
 
+<!-- 🔊 解锁按钮（iOS 必须） -->
 <button id="unlockAudio" style="
-position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-padding:12px 18px;
-border:none;
-border-radius:20px;
-background:#ff7a9e;
-color:#fff;">
+position: fixed;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+padding: 14px 20px;
+font-size: 16px;
+border-radius: 24px;
+border: none;
+background: #ff7a9e;
+color: white;
+z-index: 9999;">
 🔊 点击开启发音
 </button>
 
 <header>
   <span>💜 K-pop 韩语学习</span>
-  <span onclick="switchTheme()">🎨</span>
 </header>
 
 <div class="tabs">
   <div class="tab active" onclick="go('idol',this)">追星</div>
   <div class="tab" onclick="go('daily',this)">日常</div>
-  <div class="tab" onclick="go('topik',this)">TOPIK</div>
   <div class="tab" onclick="go('words',this)">生词本</div>
 </div>
 
 <div class="container" id="app"></div>
 
+<!-- ✅ iPhone Safari 专用 JS -->
 <script>
-let page="idol";
+let page = "idol";
+let unlocked = false;
 
-/* ================== 词库 ================== */
-const data={
-
-idol:[
-  {k:"사랑해요",r:"Sa-rang-hae-yo",s:"表达爱意"},
-  {k:"항상 응원할게요",r:"Hang-sang eung-won-hal-ge-yo",s:"长期应援"},
-  {k:"오늘 정말 멋있었어요",r:"O-neul jeong-mal meo-sit-eo-sseo-yo",s:"夸舞台"},
-  {k:"무대 최고였어요",r:"Mu-dae choi-go-yeo-sseo-yo",s:"演唱会"},
-  {k:"수고했어요",r:"Su-go-hae-sseo-yo",s:"行程结束"},
-  {k:"다치지 마세요",r:"Da-chi-ji ma-se-yo",s:"关心健康"},
-  {k:"항상 건강하세요",r:"Hang-sang geon-gang-ha-se-yo",s:"祝福"},
-  {k:"팬이에요",r:"Pa-ni-e-yo",s:"表明粉籍"},
-  {k:"정말 보고 싶었어요",r:"Jeong-mal bo-go si-peo-sseo-yo",s:"见面"},
-  {k:"오늘도 고생 많았어요",r:"O-neul-do go-saeng ma-na-sseo-yo",s:"安慰"},
-  {k:"무대에서 빛났어요",r:"Mu-dae-e-seo bit-na-sseo-yo",s:"舞台评价"},
-  {k:"항상 기다릴게요",r:"Hang-sang gi-da-ril-ge-yo",s:"陪伴"},
-  {k:"목소리가 너무 좋아요",r:"Mok-so-ri-ga neo-mu jo-a-yo",s:"夸嗓音"},
-  {k:"춤이 정말 멋있어요",r:"Chum-i jeong-mal meo-sit-eo-yo",s:"夸舞蹈"},
-  {k:"노래에 감동했어요",r:"No-rae-e gam-dong-hae-sseo-yo",s:"听歌"},
-  {k:"오늘 의상 너무 잘 어울려요",r:"O-neul ui-sang neo-mu jal eo-ul-lyeo-yo",s:"夸造型"},
-  {k:"항상 행복했으면 좋겠어요",r:"Hang-sang haeng-bok-hae-sseu-myeon jo-kke-sseo-yo",s:"祝福"},
-  {k:"앞으로도 잘 부탁드려요",r:"A-peu-ro-do jal bu-tak-deu-ri-eo-yo",s:"签售"},
-  {k:"오늘 무대 잊지 못할 거예요",r:"O-neul mu-dae it-ji mot-hal geo-ye-yo",s:"演唱会"},
-  {k:"항상 여기 있을게요",r:"Hang-sang yeo-gi i-sseul-ge-yo",s:"陪伴"}
-],
-
-daily:[
-  {k:"이거 얼마예요?",r:"I-geo eol-ma-ye-yo",s:"购物"},
-  {k:"천천히 말해 주세요",r:"Cheon-cheon-hi mal-hae ju-se-yo",s:"听不懂"},
-  {k:"괜찮아요",r:"Gwaen-chan-a-yo",s:"回应"},
-  {k:"배고파요",r:"Bae-go-pa-yo",s:"吃饭"},
-  {k:"어디 가요?",r:"Eo-di ga-yo?",s:"寒暄"}
-],
-
-topik:[
-  {k:"저는 학생이에요",r:"Jeo-neun hak-saeng-i-e-yo",s:"自我介绍"},
-  {k:"한국어를 공부하고 있어요",r:"Han-gu-geo-reul gong-bu-ha-go i-sseo-yo",s:"现在进行"},
-  {k:"다시 말해 주세요",r:"Da-si mal-hae ju-se-yo",s:"听力"},
-  {k:"제 생각에는",r:"Je saeng-ga-ge-neun",s:"写作"}
-]
-
+/* 数据 */
+const data = {
+  idol:[
+    {k:"응원해요",r:"Eung-won-hae-yo"},
+    {k:"수고했어요",r:"Su-go-hae-sseo-yo"},
+    {k:"항상 고마워요",r:"Hang-sang go-ma-wo-yo"},
+    {k:"사랑해요",r:"Sa-rang-hae-yo"}
+  ],
+  daily:[
+    {k:"이거 얼마예요?",r:"I-geo eol-ma-ye-yo"},
+    {k:"화장실 어디예요?",r:"Hwa-jang-sil eo-di-ye-yo"},
+    {k:"괜찮아요",r:"Gwaen-chan-a-yo"},
+    {k:"잠깐만요",r:"Jam-kkan-man-yo"}
+  ]
 };
 
-/* ================= 发音 ================= */
-let koVoice=null;
-speechSynthesis.onvoiceschanged=()=>{
-  koVoice=speechSynthesis.getVoices().find(v=>v.lang.includes("ko"));
-};
-function speak(t){
-  const u=new SpeechSynthesisUtterance(t);
-  u.lang="ko-KR";
-  if(koVoice)u.voice=koVoice;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
-}
-
-/* ================= 页面 ================= */
+/* 切换页面 */
 function go(p,el){
   page=p;
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   el.classList.add("active");
   render();
 }
-function save(w){
-  let l=JSON.parse(localStorage.getItem("words")||"[]");
-  if(!l.includes(w)){l.push(w);localStorage.setItem("words",JSON.stringify(l));}
+
+/* 🔓 解锁语音（必须点） */
+document.getElementById("unlockAudio").addEventListener("click",()=>{
+  const u = new SpeechSynthesisUtterance("audio unlocked");
+  u.lang="en-US";
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+
+  unlocked = true;
+  document.getElementById("unlockAudio").style.display="none";
+});
+
+/* 🔊 发音函数（iOS 安全） */
+function speak(text){
+  if(!unlocked){
+    alert("请先点击底部『开启发音』");
+    return;
+  }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang="ko-KR";
+  u.rate=0.9;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
 }
+
+/* 生词保存 */
+function save(w){
+  let list=JSON.parse(localStorage.getItem("words")||"[]");
+  if(!list.includes(w)){
+    list.push(w);
+    localStorage.setItem("words",JSON.stringify(list));
+  }
+}
+
+/* 渲染 */
 function render(){
   const box=document.getElementById("app");
   box.innerHTML="";
+
   if(page==="words"){
-    const l=JSON.parse(localStorage.getItem("words")||"[]");
-    if(!l.length){box.innerHTML="暂无生词";return;}
-    l.forEach(w=>{
-      box.innerHTML+=`<div class="card"><div class="korean">${w}</div><button onclick="speak('${w}')">▶</button></div>`;
+    const list=JSON.parse(localStorage.getItem("words")||"[]");
+    if(list.length===0){
+      box.innerHTML="<div class='card'>暂无生词</div>";
+      return;
+    }
+    list.forEach(w=>{
+      box.innerHTML+=`
+      <div class="card">
+        <div class="korean">${w}</div>
+        <button onclick="speak('${w}')">▶ 发音</button>
+      </div>`;
     });
     return;
   }
+
   data[page].forEach(i=>{
     box.innerHTML+=`
     <div class="card">
       <div class="korean">${i.k}</div>
       <div class="roman">${i.r}</div>
-      <div class="scene">📍 ${i.s}</div>
       <button onclick="speak('${i.k}')">▶ 发音</button>
       <button onclick="save('${i.k}')">⭐ 生词</button>
     </div>`;
   });
 }
 
-document.getElementById("unlockAudio").onclick=()=>{
-  speak("안녕하세요");
-  unlockAudio.style.display="none";
-};
+/* 🔍 测试按钮（必听） */
+document.body.insertAdjacentHTML("beforeend",`
+<button style="
+position:fixed;
+bottom:90px;
+left:50%;
+transform:translateX(-50%);
+padding:10px 16px;
+border-radius:20px;
+border:none;"
+onclick="speechSynthesis.speak(new SpeechSynthesisUtterance('hello'))">
+测试声音
+</button>
+`);
 
 render();
 </script>
+
 </body>
 </html>
